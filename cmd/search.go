@@ -22,6 +22,8 @@ package cmd
 
 import (
 	"fmt"
+	"net/http"
+	"net/url"
 
 	"github.com/spf13/cobra"
 )
@@ -38,13 +40,22 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// TODO: Work your own magic here
+		u, _ := url.Parse()
+		uq := u.Query()
+		uq.Add("q", "term")
+		uq.Add("access_token")
+		u, _ := url.Parse("https://recurse.com/api/v1/people/search?q=%s&auth=%s")
 		fmt.Println("search called")
+		hc := http.Client{}
+		req, err := http.NewRequest("POST", u.String(), nil)
+		if err != nil {
+			fmt.Println(err)
+		}
 	},
 }
 
 func init() {
 	peopleCmd.AddCommand(searchCmd)
-
 	// Here you will define your flags and configuration settings.
 
 	// Cobra supports Persistent Flags which will work for this command
